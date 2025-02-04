@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { Thread, type TextContentPartComponent } from "@assistant-ui/react";
+import { Thread, type TextContentPartComponent, ComposerPrimitive } from "@assistant-ui/react";
 import {
   LangChainMessage,
   useLangGraphInterruptState,
@@ -16,11 +16,32 @@ import {
 import { makeMarkdownText } from "@assistant-ui/react-markdown";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import {
+  ArrowUpIcon,
+  CheckIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CopyIcon,
+  Pencil1Icon,
+  ReloadIcon,
+} from "@radix-ui/react-icons";
 
 import { createThread, getThreadState, sendMessage } from "@/lib/chatApi";
 import { ToolFallback } from "./tools/ToolFallback";
 
 const MarkdownComponent = makeMarkdownText() as unknown as TextContentPartComponent;
+
+const MyComposer: React.FC = () => {
+  return (
+    <ComposerPrimitive.Root className="focus-within:border-ring/20 flex w-full flex-wrap items-end rounded-lg border bg-inherit px-2.5 shadow-sm transition-colors ease-in">
+      <ComposerPrimitive.Input
+        className="min-h-[20px] w-full resize-none bg-transparent px-0 py-2 focus:outline-none"
+        placeholder="Type a message..."
+      />
+    </ComposerPrimitive.Root>
+  );
+};
 
 const InterruptUI = () => {
   const interrupt = useLangGraphInterruptState();
@@ -38,8 +59,18 @@ const InterruptUI = () => {
     <div className="flex flex-col gap-2">
       <div>Interrupt: {interrupt.value}</div>
       <div className="flex items-end gap-2">
-        <Button onClick={respondYes}>Confirm</Button>
-        <Button onClick={respondNo}>Reject</Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button onClick={respondYes}>Confirm</Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Confirm</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button onClick={respondNo}>Reject</Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">Reject</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );
@@ -82,7 +113,10 @@ export function MyAssistant() {
   return (
     <Thread
       runtime={runtime}
-      components={{ MessagesFooter: InterruptUI }}
+      components={{
+        MessagesFooter: InterruptUI,
+        Composer: MyComposer
+      }}
       assistantMessage={{ components: { Text: MarkdownComponent, ToolFallback } }}
     />
   );
