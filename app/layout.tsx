@@ -35,7 +35,6 @@ export default function RootLayout({
           <UserProvider
             loginUrl="/mock-login"
             profileUrl="/api/auth/userinfo"
-            debug={true}
           >
             <Navbar />
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
