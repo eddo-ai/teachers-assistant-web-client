@@ -263,7 +263,7 @@ describe('MyAssistant', () => {
             const confirmButton = screen.getByText('Yes');
             fireEvent.click(confirmButton);
 
-            expect(sendCommandMock).toHaveBeenCalledWith({ resume: 'yes' });
+            expect(sendCommandMock).toHaveBeenCalledWith({ resume: 'yes', type: 'authorization' });
         });
 
         it('calls sendCommand with "no" when Reject button is clicked', () => {
@@ -278,7 +278,34 @@ describe('MyAssistant', () => {
             const rejectButton = screen.getByText('No');
             fireEvent.click(rejectButton);
 
-            expect(sendCommandMock).toHaveBeenCalledWith({ resume: 'no' });
+            expect(sendCommandMock).toHaveBeenCalledWith({ resume: 'no', type: 'authorization' });
+        });
+
+        it('renders OAuth interrupt UI when there is an OAuth interrupt', () => {
+            (useLangGraphInterruptState as jest.Mock).mockReturnValue({
+                value: 'Please use the following link to authorize: https://accounts.google.com/o/oauth2/auth',
+            });
+
+            render(<MyAssistant />);
+
+            expect(screen.getByText('Authorization Required')).toBeInTheDocument();
+            expect(screen.getByText('Please visit this URL to authorize access:')).toBeInTheDocument();
+            expect(screen.getByText('https://accounts.google.com/o/oauth2/auth')).toBeInTheDocument();
+        });
+
+        it('calls sendCommand with "no" when Cancel button is clicked in OAuth interrupt UI', () => {
+            const sendCommandMock = jest.fn();
+            (useLangGraphInterruptState as jest.Mock).mockReturnValue({
+                value: 'Please use the following link to authorize: https://accounts.google.com/o/oauth2/auth',
+            });
+            (useLangGraphSendCommand as jest.Mock).mockReturnValue(sendCommandMock);
+
+            render(<MyAssistant />);
+
+            const cancelButton = screen.getByText('Cancel');
+            fireEvent.click(cancelButton);
+
+            expect(sendCommandMock).toHaveBeenCalledWith({ resume: 'no', type: 'authorization' });
         });
     });
 });
