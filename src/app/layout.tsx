@@ -1,18 +1,19 @@
 'use client';
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Roboto_Mono } from "next/font/google";
 import Navbar from "@/src/app/components/Navbar";
 import "./globals.css";
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+
+const inter = Inter({
+  variable: "--font-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const robotoMono = Roboto_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
 });
 
@@ -25,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <UserProvider>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${inter.variable} ${robotoMono.variable} antialiased`}
         >
           <I18nextProvider i18n={i18n}>
             <Navbar />
