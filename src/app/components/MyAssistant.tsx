@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { Thread } from "@assistant-ui/react";
 import {
   LangChainMessage,
@@ -17,6 +17,7 @@ import { Button } from "./ui/button";
 import { createThread, getThreadState, sendMessage } from "@/src/app/lib/chatApi";
 import { MarkdownTextPrimitive } from "@assistant-ui/react-markdown";
 import { Card } from "./ui/card";
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const MarkdownComponent = MarkdownTextPrimitive;
 
@@ -76,6 +77,17 @@ const InterruptUI = () => {
 
 export function MyAssistant() {
   const threadIdRef = useRef<string | undefined>(undefined);
+  const { user } = useUser();
+  const prevUserRef = useRef<string | undefined>(undefined);
+
+  useEffect(() => {
+    const currentUserId = user?.email || undefined;
+    // If user changed (including login/logout), clear the thread
+    if (prevUserRef.current !== currentUserId) {
+      threadIdRef.current = undefined;
+      prevUserRef.current = currentUserId;
+    }
+  }, [user]);
 
   const runtime = useLangGraphRuntime({
     threadId: threadIdRef.current,
@@ -85,11 +97,26 @@ export function MyAssistant() {
         threadIdRef.current = thread_id;
       }
       const threadId = threadIdRef.current;
-      return sendMessage({
+      const rawStream = await sendMessage({
         threadId,
         messages,
         command
       });
+
+      // Transform the raw stream into a LangGraphMessagesEvent stream
+      async function* transformStream() {
+        for await (const chunk of rawStream) {
+          if (chunk.value && typeof chunk.value === 'object') {
+            // Assuming the chunk.value contains either a message or an update event
+            yield {
+              event: 'message',
+              data: chunk.value as LangChainMessage
+            };
+          }
+        }
+      }
+
+      return transformStream();
     },
     onSwitchToNewThread: async () => {
       const { thread_id } = await createThread();

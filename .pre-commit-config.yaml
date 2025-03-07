@@ -6,4 +6,10 @@ repos:
         entry: bash -c 'pnpm install --lockfile-only'
         language: system
         files: package.json
-        pass_filenames: false 
+        pass_filenames: false
+      - id: build-check
+        name: Build Check
+        entry: bash -c 'pnpm run build'
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
