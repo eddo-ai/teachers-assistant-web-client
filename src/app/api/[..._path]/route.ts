@@ -22,7 +22,7 @@ async function handleRequest(req: NextRequest, method: string) {
       : "";
 
     const apiKey = process.env["LANGSMITH_API_KEY"];
-    const apiUrl = process.env["LANGGRAPH_API_URL"] || process.env["NEXT_PUBLIC_LANGGRAPH_API_URL"];
+    const apiUrl = process.env["LANGGRAPH_API_URL"];
 
     if (!apiKey || !apiUrl) {
       throw new Error("Missing required environment variables");

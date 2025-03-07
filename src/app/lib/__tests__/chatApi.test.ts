@@ -33,7 +33,7 @@ describe("chatApi", () => {
         jest.clearAllMocks();
 
         // Reset environment variables
-        process.env.NEXT_PUBLIC_LANGGRAPH_API_URL = "http://test-api";
+        process.env.LANGGRAPH_API_URL = "http://test-api";
         process.env.NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID = "test-assistant-id";
 
         // Set up default mock implementations

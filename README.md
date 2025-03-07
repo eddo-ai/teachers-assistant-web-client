@@ -17,17 +17,6 @@ LANGGRAPH_API_URL=your_langgraph_api_url
 NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID=your_assistant_id_or_graph_id
 ```
 
-### Option 2: Direct API Access
-
-If you prefer to access the LangGraph API directly (not recommended for production):
-
-```
-NEXT_PUBLIC_LANGGRAPH_API_URL=your_langgraph_api_url
-NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID=your_assistant_id_or_graph_id
-```
-
-Note: Do not set both `LANGGRAPH_API_URL` and `NEXT_PUBLIC_LANGGRAPH_API_URL`. Choose one approach or the other.
-
 Then, run the development server:
 
 ```bash

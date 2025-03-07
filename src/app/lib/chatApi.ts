@@ -14,12 +14,12 @@ export class ChatApiError extends Error {
 
 const createClient = () => {
   const apiUrl =
-    process.env["NEXT_PUBLIC_LANGGRAPH_API_URL"] ||
+    process.env["LANGGRAPH_API_URL"] ||
     new URL("/api", window.location.href).href;
 
   console.log('[createClient] Using API URL:', apiUrl);
   console.log('[createClient] Environment variables:', {
-    NEXT_PUBLIC_LANGGRAPH_API_URL: process.env["NEXT_PUBLIC_LANGGRAPH_API_URL"],
+    LANGGRAPH_API_URL: process.env["LANGGRAPH_API_URL"],
     NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID: process.env["NEXT_PUBLIC_LANGGRAPH_ASSISTANT_ID"]
   });
 
